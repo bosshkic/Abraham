@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>亞伯拉罕</title>
+    <style>
+        :root {
+            --primary-color: #336da1;
+            --primary-light: #E3F2FD;
+            --primary-dark: #1565C0;
+            --accent-color: #FF9800;
+            --correct-color: #4CAF50;
+            --incorrect-color: #F44336;
+            --background-color: #F5F5F5;
+            --card-color: #FFFFFF;
+            --text-color: #212121;
+            --text-secondary: #757575;
+            --header-bg: #efefef;
+            --header-text: #656565;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        /* 修改標題背景 */
+        .header {
+            text-align: center;
+            padding: 16px;
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            z-index: 20;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            background-color: var(--card-color);
+            padding: 12px 1px 12px 1px;
+            overflow-x: auto;
+            white-space: nowrap;
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            z-index: 20;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+            gap: 5px;
+            justify-content: center;
+        }
+        
+        .progress-bar::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .progress-bar::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+        
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /*margin-right: 4px;*/
+            /*margin-bottom: 5px;*/
+            min-width: 55px;
+            max-width: 80px;
+            position: relative;
+        }
+        
+        .step-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #E4E4E4;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .step-dot.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+        }
+        
+        .step-dot.completed {
+            background-color: var(--correct-color);
+            color: white;
+        }
+        
+        .step-title {
+            font-size: 14px;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            max-height: 28px;
+            white-space: normal;
+            width: 100%;
+            color: var(--text-secondary);
+        }
+        
+        .step-connector {
+            position: absolute;
+            top: 14px;
+            right: -14px;
+            height: 2px;
+            width: 24px;
+            background-color: #E4E4E4;
+            z-index: 1;
+        }
+        
+        .step-connector.completed {
+            background-color: var(--correct-color);
+        }
+        
+        /* 重要：內容區域和問題區域的布局修改 */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background-color: var(--background-color);
+        }
+        
+        .section-content {
+            display: none;
+            padding-bottom: 16px;
+        }
+        
+        .section-content.active {
+            display: block;
+        }
+        
+        .intro-card {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .intro-title {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .content-card {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .section-title {
+            color: var(--text-color);
+            font-size: 17px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .verse-text {
+            line-height: 1.8;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .blank {
+            display: inline-block;
+            border-bottom: 2px solid var(--primary-color);
+            min-width: 40px;
+            text-align: center;
+            color: var(--primary-color);
+            font-weight: 600;
+            padding: 0 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .blank.current {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                background-color: rgba(30, 136, 229, 0.05);
+                box-shadow: 0 0 0 0 rgba(30, 136, 229, 0.4);
+            }
+            50% {
+                background-color: rgba(30, 136, 229, 0.15);
+                box-shadow: 0 0 0 5px rgba(30, 136, 229, 0);
+            }
+            100% {
+                background-color: rgba(30, 136, 229, 0.05);
+                box-shadow: 0 0 0 0 rgba(30, 136, 229, 0);
+            }
+        }
+        
+        /* 問題容器 - 修改為不覆蓋內容 */
+        .question-container {
+            background-color: var(--card-color);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            padding: 16px;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            transition: all 0.3s;
+            z-index: 10;
+            width: 100%;
+        }
+        
+        .progress-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .progress-line {
+            height: 6px;
+            background-color: #E4E4E4;
+            border-radius: 4px;
+            width: 60%;
+            margin: 0 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .question-card {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary-color);
+            padding: 10px;
+            border-radius: 12px;
+            /*margin-bottom: 12px;*/
+        }
+        
+        .question-text {
+            font-size: 17px;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .option {
+            background-color: #F5F5F7;
+            border: 1px solid #E4E4E4;
+            border-radius: 10px;
+            padding: 7px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .option:active {
+            background-color: #EAEAEB;
+            transform: scale(0.98);
+        }
+        
+        .option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(30, 136, 229, 0.1);
+        }
+        
+        .option.correct {
+            background-color: var(--correct-color);
+            color: white;
+            border-color: var(--correct-color);
+        }
+        
+        .option.incorrect {
+            background-color: var(--incorrect-color);
+            color: white;
+            border-color: var(--incorrect-color);
+        }
+        
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(30, 136, 229, 0.3);
+            width: 100%;
+        }
+        
+        .submit-btn:active {
+            background-color: var(--primary-dark);
+            transform: scale(0.98);
+        }
+        
+        .result-container {
+            background-color: var(--card-color);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 24px;
+            text-align: center;
+            margin: 20px auto;
+            max-width: 340px;
+            display: none;
+        }
+        
+        .score {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .feedback {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+        
+        .stats-container {
+            margin: 20px 0;
+            text-align: left;
+            background-color: var(--background-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .stat-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-label {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .restart-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(255, 149, 0, 0.3);
+            margin-top: 10px;
+        }
+        
+        .restart-btn:active {
+            background-color: #E68600;
+            transform: scale(0.98);
+        }
+        
+        .bounce-animation {
+            animation: bounce 1s;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+		
+		/* 完整內容回顧容器*/
+		.review-main-container {
+			width: 100%;
+			/*max-width: 800px;*/
+			padding: 0 10px;
+		}
+
+		.review-content {
+			background-color: white;
+			border-radius: 12px;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+			padding: 20px;
+			text-align: left;
+		}
+
+		.review-header {
+			text-align: center;
+			font-size: 22px;
+			margin-bottom: 20px;
+			color: var(--primary-color);
+			border-bottom: 1px solid #eee;
+			padding-bottom: 10px;
+		}
+
+		.review-chapter {
+			margin-bottom: 20px;
+			background-color: #f9f9f9;
+			border-radius: 8px;
+			overflow: hidden;
+		}
+
+		.chapter-header {
+			background-color: var(--primary-light);
+			color: var(--primary-color);
+			padding: 12px 15px;
+			font-size: 17px;
+			margin: 0;
+			border-left: 4px solid var(--primary-color);
+		}
+
+		.chapter-content {
+			padding: 15px;
+			display: block !important;
+		}
+
+		.content-line {
+			margin-bottom: 8px;
+			line-height: 1.6;
+			color: #212121;
+		}
+
+		.answer-highlight {
+			font-weight: bold;
+			color: var(--correct-color);
+			background-color: rgba(76, 175, 80, 0.1);
+			padding: 2px 6px;
+			border-radius: 4px;
+			border: 1px solid rgba(76, 175, 80, 0.3);
+		}
+
+		.back-top-button {
+			background-color: var(--primary-color);
+			color: white;
+			border: none;
+			border-radius: 12px;
+			padding: 12px 20px;
+			font-size: 16px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s;
+			box-shadow: 0 2px 8px rgba(30, 136, 229, 0.3);
+			margin: 20px auto 10px;
+			display: block;
+		}
+
+		.back-top-button:active {
+			background-color: var(--primary-dark);
+			transform: scale(0.98);
+		}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>亞伯拉罕</h1>
+        <p>創世記 12章-25章10節</p>
+    </div>
+    
+    <div class="progress-bar" id="progress-bar">
+        <!-- 動態生成章節進度指示器 -->
+    </div>
+    
+    <div class="content-wrapper">
+        <div class="content-area" id="content-area">
+            <div id="intro-content" class="section-content active">                
+                <div id="result-container" class="result-container">
+                    <div id="score" class="score"></div>
+                    <p id="feedback" class="feedback"></p>
+                    <div id="stats-container" class="stats-container"></div>
+                    <button id="restart-btn" class="restart-btn">重新開始</button>
+                </div>
+            </div>
+            
+            <!-- 章節內容區域會動態生成 -->
+        </div>
+        
+        <div class="question-container" id="question-container">
+            <div class="progress-indicator">
+                <span id="progress-count" class="progress-text"></span>
+                <div class="progress-line">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <span id="progress-score" class="progress-text"></span>
+            </div>
+            
+            <div class="question-card">
+                <p id="question-text" class="question-text"></p>
+                <div id="options-container" class="options-container"></div>
+            </div>
+            
+            <button id="submit-btn" class="submit-btn">提交答案</button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 使用URL編碼
+            function encodeAnswer(answer) {
+                return encodeURIComponent(answer);
+            }
+            
+            function decodeAnswer(encoded) {
+                try {
+                    return decodeURIComponent(encoded);
+                } catch (e) {
+                    console.error('解碼錯誤', e);
+                    return '';
+                }
+            }
+            
+            // 聖經內容與問題數據
+            const bibleContent = [
+                {
+                    section: "A",
+                    title: "蒙召離鄉",
+                    subtitle: "(12:1-9)",
+                    content: [
+                        "<b style='color: var(--primary-color);'>神的呼召</b> (12:1) 離開[0]",
+                        "<b style='color: var(--primary-color);'>神的應許</b> (12:2-3) 我必使你成為[1]，萬族都因你得福",
+                        "<b style='color: var(--primary-color);'>順服回應</b> (12:4-5) 亞伯蘭75歲照耶和華所吩咐前往[2]"
+                    ],
+                    questions: [
+						{
+                            id: 0,
+                            encodedAnswer: "%E6%9C%AC%E5%9C%B0%E3%80%81%E6%9C%AC%E6%97%8F%E3%80%81%E7%88%B6%E5%AE%B6",
+                            options: ["沙漠", "沿海地方", "幼發拉底河", "本地、本族、父家"]
+                        },
+                        {
+                            id: 1,
+                            encodedAnswer: "%E5%A4%A7%E5%9C%8B",
+                            options: ["大國", "富翁", "族長", "君王"]
+                        },
+                        {
+                            id: 2,
+                            encodedAnswer: "%E8%BF%A6%E5%8D%97",
+                            options: ["迦南", "埃及", "巴比倫", "亞述"]
+                        }
+                    ]
+                },
+                {
+                    section: "B",
+                    title: "初期軟弱",
+                    subtitle: "(12:10-13:4)",
+                    content: [
+                        "<b style='color: var(--primary-color);'>埃及避饑</b> (12:10) 因為那地的[0]十分嚴重就下到埃及去",
+                        "<b style='color: var(--primary-color);'>狡辯求生</b> (12:11-13) 狡辯稱撒萊是[1]",
+                        "<b style='color: var(--primary-color);'>神的保護</b> (12:16) 得了許多牲畜和僕婢 (12:17-20) 用嚴重災病打擊[2]"
+                    ],
+                    questions: [
+                        {
+                            id: 0,
+                            encodedAnswer: "%E9%A5%91%E8%8D%92",
+                            options: ["饑荒", "戰爭", "疾病", "瘟疫"]
+                        },
+                        {
+                            id: 1,
+                            encodedAnswer: "%E5%A6%B9%E5%A6%B9",
+                            options: ["妹妹", "表妹", "姊姊", "婢女"]
+                        },
+						{
+                            id: 2,
+                            encodedAnswer: "%E6%B3%95%E8%80%81%E5%92%8C%E4%BB%96%E7%9A%84%E5%85%A8%E5%AE%B6",
+                            options: ["埃及女子", "埃及長子", "法老和他的全家", "埃及人"]
+                        }
+                    ]
+                },
+                {
+                    section: "C",
+                    title: "信心初現",
+                    subtitle: "(13:5-14:24)",
+                    content: [
+                        "<b style='color: var(--primary-color);'>謙讓選地</b> (13:6-8) 財多牧人就相爭因而決定分開 (13:9-12) 讓羅得先選地，羅得選肥沃的[0]平原，亞伯蘭居迦南<br/>(13:13) 耶和華看所多瑪人是[1]<br/>(13:14-16)神應許亞伯蘭後裔像[2]那麼多",
+                        "<b style='color: var(--primary-color);'>營救羅得</b> (14:1-12) 四王與五王交戰，羅得受牽連被擄 (14:13-16) 聞羅得被擄，率領318人追趕，救回羅得與財物",
+                        "<b style='color: var(--primary-color);'>榮耀歸神</b> (14:18-20) 神的祭司，撒冷王[3]祝福亞伯蘭尊崇至高神將敵交到手中，亞伯蘭獻[4] (14:21-24) 拒絕所多瑪王財物，尊神的名倚靠神",
+                    ],
+                    questions: [
+                        {
+                            id: 0,
+                            encodedAnswer: "%E6%89%80%E5%A4%9A%E7%91%AA",
+                            options: ["所多瑪", "迦南", "約旦", "巴比倫"]
+                        },
+                        {
+                            id: 1,
+                            encodedAnswer: "%E7%BD%AA%E5%A4%A7%E6%83%A1%E6%A5%B5",
+                            options: ["罪大惡極", "悖逆的", "貪戀錢財", "頑梗的"]
+                        },
+                        {
+                            id: 2,
+                            encodedAnswer: "%E5%9C%B0%E4%B8%8A%E5%A1%B5%E6%B2%99",
+                            options: ["地上塵沙", "空中白雲", "海中魚類", "花草樹木"]
+                        },
+                        {
+                            id: 3,
+                            encodedAnswer: "%E9%BA%A5%E5%9F%BA%E6%B4%97%E5%BE%B7",
+                            options: ["麥基洗德", "亞比米勒", "巴拉", "瑪拿西"]
+                        },
+                        {
+                            id: 4,
+                            encodedAnswer: "%E6%89%80%E5%BE%97%E5%8D%81%E5%88%86%E4%B9%8B%E4%B8%80",
+                            options: ["所得十分之一", "祭物", "感恩祭", "素祭"]
+                        }
+                    ]
+                },
+                // 示例：添加更多章節 D-K
+                {
+                    section: "D",
+                    title: "與神立約",
+                    subtitle: "(15)",
+                    content: [
+                        "<b style='color: var(--primary-color);'>神的應許</b> (15:5) 數點眾星，[0]將要這樣眾多 (15:7) 賜[1]為業",
+						"<b style='color: var(--primary-color);'>因信稱義</b> (15:6) 亞伯蘭信耶和華，耶和華就以此[2]",
+						"<b style='color: var(--primary-color);'>立約儀式</b> (15:9-12, 17) 亞伯蘭[3]; 神的火在分開的祭牲中間經過",
+						"<b style='color: var(--primary-color);'>神所預言</b> (15:15) 必得享長壽 (15:13-16) 後裔寄居外地被苦待[4]，到第四代歸回",
+                    ],
+                    questions: [
+						{
+                            id: 0,
+                            encodedAnswer: "%E5%BE%8C%E8%A3%94",
+                            options: ["財富", "牲畜", "僕婢", "後裔"]
+                        },
+                        {
+                            id: 1,
+                            encodedAnswer: "%E8%BF%A6%E5%8D%97%E5%9C%B0",
+                            options: ["埃及地", "所多瑪城", "迦南地", "約旦河"]
+                        },
+						{
+                            id: 2,
+                            encodedAnswer: "%E7%AE%97%E7%82%BA%E4%BB%96%E7%9A%84%E7%BE%A9",
+                            options: ["算為他的義", "算他為誠實", "算他為聰明", "算他為慷慨"]
+                        },
+						{
+                            id: 3,
+                            encodedAnswer: "%E6%B2%89%E7%9D%A1",
+                            options: ["背著", "沉睡", "跪下", "站著"]
+                        },
+						{
+                            id: 4,
+                            encodedAnswer: "%E5%9B%9B%E7%99%BE%E5%B9%B4",
+                            options: ["一千年", "七十個七年", "四百年", "四十年"]
+                        },
+					]
+                },
+                {
+                    section: "E",
+                    title: "E.	信心不足",
+                    subtitle: "(16)",
+                    content: [
+                        "<b style='color: var(--primary-color);'>自訂計謀</b> (16:1-3) 撒萊出計藉婢女夏甲生子 (16:16) 亞伯蘭86歲藉夏甲生[0]",
+						"<b style='color: var(--primary-color);'>家庭矛盾</b> (16:4-5) 夏甲因[1]而輕看主母撒萊 (16:6) 撒萊虐待夏甲，夏甲逃走",
+						"<b style='color: var(--primary-color);'>神的看顧</b> (16:7-15) [2]安慰夏甲，預言以實瑪利未來"
+                    ],
+                    questions: [
+						{
+                            id: 0,
+                            encodedAnswer: "%E4%BB%A5%E5%AF%A6%E7%91%AA%E5%88%A9",
+                            options: ["以實瑪利", "以掃", "以色列", "以東"]
+                        },
+						{
+                            id: 1,
+                            encodedAnswer: "%E6%9C%89%E5%AD%95",
+                            options: ["聰明", "年輕", "美貎", "有孕"]
+                        },
+						{
+                            id: 2,
+                            encodedAnswer: "%E7%A5%9E",
+                            options: ["亞伯蘭", "撒萊", "神", "僕人"]
+                        },
+					]
+                },
+                {
+                    section: "F",
+                    title: "割禮之約",
+                    subtitle: "(17-18:19)",
+                    content: [
+                        "<b style='color: var(--primary-color);'>名字更改</b> (17:5, 15) 亞伯蘭99歳改名[0]，作萬國的父。撒萊改名撒拉",
+						"<b style='color: var(--primary-color);'>立約應許</b> (17:6-8) [1]必從你而出，迦南地為永遠產業 (17:16-17, 19, 21) 撒拉作多國之母，明年生兒子[2]，君王必從撒拉而出<br/>(17:17) 亞伯拉罕難以置信笑了<br/>(17:20) 以實瑪利必生十二個族長也成為大國<br/>(18:1-15) 耶和華顯現，天使預告明年撒拉必生兒子，撒拉聽後想到年紀老邁又已停月經因而暗笑",
+						"<b style='color: var(--primary-color);'>割禮記號</b> (17:9-14) 世世代代男子謹守割禮的約，不受割禮的男子必[3]<br/>(17:22-27) 亞伯拉罕家裡所有的男人，一同受了割禮，那時亞伯拉罕99歲，以實瑪利13歲"
+                    ],
+                    questions: [
+						{
+                            id: 0,
+                            encodedAnswer: "%E4%BA%9E%E4%BC%AF%E6%8B%89%E7%BD%95",
+                            options: ["大伯", "亞伯", "約伯", "亞伯拉罕"]
+                        },
+						{
+                            id: 1,
+                            encodedAnswer: "%E5%9C%8B%E5%BA%A6%E5%90%9B%E7%8E%8B",
+                            options: ["國度君王", "祭司", "士師", "巨人"]
+                        },
+						{
+                            id: 2,
+                            encodedAnswer: "%E4%BB%A5%E6%92%92",
+                            options: ["以掃", "以撒", "雅各", "大衛"]
+                        },
+						{
+                            id: 3,
+                            encodedAnswer: "%E5%BE%9E%E6%B0%91%E4%B8%AD%E5%89%AA%E9%99%A4",
+                            options: ["享長壽", "受祝福", "從民中剪除", "受詛咒"]
+                        }
+					]
+                },
+                {
+                    section: "G",
+                    title: "所多瑪蛾摩拉",
+                    subtitle: "(18:20-19:38)",
+                    content: [
+                        "<b style='color: var(--primary-color);'>罪惡滿城</b> (18:20) 所多瑪和蛾摩拉罪惡極重 (19:1-11) 羅得接待兩[0]，所多瑪人顯出其惡行要求交出二人同房",
+						"<b style='color: var(--primary-color);'>為義人求</b> (18:23-33) 亞伯拉罕為五十個/四十五個/四十個/三十個/二十個/十個義人代救，耶和華承諾不因十個義人[1]",
+						"<b style='color: var(--primary-color);'>罪惡審判</b> (19:12, 14-17) 天使救羅得一家，吩咐要[2]<br/>(19:13) 宣告滅城 (19:23-25) [3]降與所多瑪和蛾摩拉<br/>(19:26) 羅得的妻子回望，就變成了[4]<br/>(19:29) 神記念亞伯拉罕，把羅得從傾覆中救出<br/>(19:30-38) 羅得兩個女兒為留後而弄醉父親同睡，大女兒生兒子即[5]人始祖，小女兒生兒子即[6]人始祖",
+                    ],
+                    questions: [
+						{
+                            id: 0,
+                            encodedAnswer: "%E5%A4%A9%E4%BD%BF",
+                            options: ["婦人", "天使", "先知", "博士"]
+                        },
+						{
+                            id: 1,
+                            encodedAnswer: "%E6%BB%85%E5%9F%8E",
+                            options: ["詛咒", "滅世", "滅城", "降災"]
+                        },
+						{
+                            id: 2,
+                            encodedAnswer: "%E9%80%83%E5%88%B0%E5%B1%B1%E4%B8%8A%E4%B8%8D%E8%83%BD%E5%81%9C%E7%95%99%E4%B8%8D%E8%83%BD%E5%9B%9E%E6%9C%9B",
+                            options: ["逃到山上不能停留不能回望", "禁食禱告", "回到亞伯蘭身邊", "留在原處"]
+                        },
+						{
+                            id: 3,
+                            encodedAnswer: "%E7%A1%AB%E7%A3%BA%E8%88%87%E7%81%AB",
+                            options: ["雷與電", "祝福與財寶", "冰雹與血雨", "硫磺與火"]
+                        },
+						{
+                            id: 4,
+                            encodedAnswer: "%E9%B9%BD%E6%9F%B1",
+                            options: ["木頭", "鹽柱", "鹽田", "石柱"]
+                        },
+						{
+                            id: 5,
+                            encodedAnswer: "%E6%91%A9%E6%8A%BC",
+                            options: ["亞瑪力", "迦南", "亞捫", "摩押"]
+                        },
+						{
+                            id: 6,
+                            encodedAnswer: "%E4%BA%9E%E6%8D%AB",
+                            options: ["米甸", "迦南", "亞捫", "摩押"]
+                        }
+					]
+                },
+                {
+                    section: "H",
+                    title: "再次軟弱",
+                    subtitle: "(20)",
+                    content: [
+                        "<b style='color: var(--primary-color);'>再次狡辯</b> (20:1-2) 亞伯拉罕到了基拉耳又稱妻子為「[0]」，導致基拉耳王亞比米勒取走撒拉",
+						"<b style='color: var(--primary-color);'>神的保護</b> (20:3-7) 在夢中警戒亞比米勒要歸還撒拉因亞伯拉罕是[1] (20:8) 亞比米勒敬畏神遵從",
+						"<b style='color: var(--primary-color);'>見證信仰</b> (20:7) 神指示亞比米勒要有亞伯拉罕為其[2]才能存活 (20:17-18) 亞伯拉罕為亞比米勒向神禱告，神就醫好了亞比米勒家的婦女，使她們能生育。因神曾因撒拉的原故使她們不能生育",
+                    ],
+                    questions: [
+						{
+                            id: 0,
+                            encodedAnswer: "%E5%A6%B9%E5%A6%B9",
+                            options: ["妹妹", "表妹", "姊姊", "婢女"]
+                        },
+						{
+                            id: 1,
+                            encodedAnswer: "%E5%85%88%E7%9F%A5",
+                            options: ["君王", "祭司", "士師", "先知"]
+                        },
+						{
+                            id: 2,
+                            encodedAnswer: "%E7%A6%B1%E5%91%8A",
+                            options: ["行割禮", "獻祭", "禁食", "禱告"]
+                        }
+					]
+                },
+                {
+                    section: "I",
+                    title: "應許實現",
+                    subtitle: "(21)",
+                    content: [
+                        "<b style='color: var(--primary-color);'>以撒出生</b> (21:1-7) 亞伯拉罕正[0]歲生以撒，以撒在第八天行割禮",
+						"<b style='color: var(--primary-color);'>家庭矛盾</b> (21:8-14) 亞伯拉罕聽從撒拉及神，[1]夏甲和以實瑪利<br/>(21:12-13) [2]生的，才可以稱為你的後裔; 以實瑪利也是你的後裔",
+						"<b style='color: var(--primary-color);'>神的眷顧</b> (21:15-21) 夏甲母子得保守",
+						"<b style='color: var(--primary-color);'>見證祝福</b> (21:22-34) 亞比米勒見證神與亞伯拉罕同在，彼此立約要相方子孫互相恩待"
+                    ],
+                    questions: [
+						{
+                            id: 0,
+                            encodedAnswer: "%E4%B8%80%E7%99%BE",
+                            options: ["六十", "一百", "六百", "一百二十"]
+                        },
+						{
+                            id: 1,
+                            encodedAnswer: "%E9%80%90%E5%87%BA",
+                            options: ["逐出", "苦待", "欺騙", "厚待"]
+                        },
+						{
+                            id: 2,
+                            encodedAnswer: "%E4%BB%A5%E6%92%92",
+                            options: ["以實瑪利", "撒拉", "夏甲", "以撒"]
+                        }
+					]
+                },
+                {
+                    section: "J",
+                    title: "信心巔峰",
+                    subtitle: "(22)",
+                    content: [
+                        "<b style='color: var(--primary-color);'>獻子信心</b> (22:1-10) 神吩咐獻[0]為燔祭，亞伯拉罕順服遵從，堅信神必預備",
+						"<b style='color: var(--primary-color);'>神的印證</b> (22:11-14) 神預備[1]代替; 「耶和華[2]」「在耶和華的山上必有預備。」",
+						"<b style='color: var(--primary-color);'>萬代應許</b> (22:15-18) 神起誓賜福，後裔繁多像天上的星海邊的沙，後裔必征服仇敵"
+                    ],
+                    questions: [
+						{
+                            id: 0,
+                            encodedAnswer: "%E4%BB%A5%E6%92%92",
+                            options: ["以撒", "公羊", "財寶", "公牛"]
+                        },
+						{
+                            id: 1,
+                            encodedAnswer: "%E5%85%AC%E7%BE%8A",
+                            options: ["麥穗", "雛鴿", "公羊", "公牛"]
+                        },
+						{
+                            id: 2,
+                            encodedAnswer: "%E4%BB%A5%E5%8B%92",
+                            options: ["尼西", "以勒", "拉法", "沙龍"]
+                        }
+					]
+                },
+                {
+                    section: "K",
+                    title: "晚年終章",
+                    subtitle: "(23-25:10)",
+                    content: [
+                        "<b style='color: var(--primary-color);'>買地安葬</b> (23:1-20) 撒拉享壽[0]歲，亞伯拉罕為撒拉買麥比拉洞安葬",
+						"<b style='color: var(--primary-color);'>以撒娶妻</b> (24:1-67) 亞伯拉罕打發僕人在神預備中為以撒娶[1]",
+						"<b style='color: var(--primary-color);'>安息離世</b> (25:1) 亞伯拉罕再娶妻，名叫基土拉 (25:7-10) 亞伯拉罕享壽[2]歲，葬於麥比拉洞",
+                    ],
+                    questions: [
+						{
+                            id: 0,
+                            encodedAnswer: "%E4%B8%80%E7%99%BE%E4%BA%8C%E5%8D%81%E4%B8%83",
+                            options: ["一百", "一百二十七", "六百", "六百八十"]
+                        },
+						{
+                            id: 1,
+                            encodedAnswer: "%E5%88%A9%E7%99%BE%E5%8A%A0",
+                            options: ["利百加", "馬大", "拉結", "路得"]
+                        },
+						{
+                            id: 2,
+                            encodedAnswer: "%E4%B8%80%E7%99%BE%E4%B8%83%E5%8D%81%E4%BA%94",
+                            options: ["一百", "一百二十七", "一百七十五", "六百"]
+                        }
+					]
+                }
+            ];
+            
+            // 遊戲狀態變數
+            let currentSectionIndex = 0;
+            let currentQuestionIndex = 0;
+            let score = 0;
+            let totalWrongAttempts = 0;
+            let allQuestions = [];
+            let currentQuestionGlobalIndex = 0;
+            
+            // 初始化遊戲
+            function initGame() {
+                // 生成所有章節的內容
+                renderSections();
+                
+                // 生成章節進度條
+                renderProgressBar();
+                
+                // 提取所有問題並扁平化
+                flattenQuestions();
+                
+                // 顯示第一個問題
+                showQuestion(0);
+                
+                // 更新進度
+                updateProgress();
+                
+                // 事件監聽
+                document.getElementById('submit-btn').addEventListener('click', submitAnswer);
+                document.getElementById('restart-btn').addEventListener('click', function() {
+                    location.reload();
+                });
+            }
+            
+            // 扁平化所有問題
+            function flattenQuestions() {
+                allQuestions = [];
+                bibleContent.forEach(section => {
+                    section.questions.forEach(question => {
+                        allQuestions.push({
+                            ...question,
+                            sectionIndex: bibleContent.indexOf(section)
+                        });
+                    });
+                });
+            }
+            
+            // 渲染所有章節內容
+            function renderSections() {
+                const contentArea = document.getElementById('content-area');
+                
+                bibleContent.forEach((section, index) => {
+                    const sectionEl = document.createElement('div');
+                    sectionEl.id = `section-${section.section}-content`;
+                    sectionEl.className = 'section-content';
+                    if (index === 0) {
+                        // 第一個章節初始顯示，但不是intro
+                        sectionEl.classList.add('active');
+                        document.getElementById('intro-content').classList.remove('active');
+                    }
+                    
+                    const contentCard = document.createElement('div');
+                    contentCard.className = 'content-card';
+                    
+                    const titleEl = document.createElement('h2');
+                    titleEl.className = 'section-title';
+                    titleEl.textContent = `${section.section}. ${section.title} ${section.subtitle}`;
+                    
+                    const verseTextEl = document.createElement('p');
+                    verseTextEl.className = 'verse-text';
+                    
+                    // 處理內容，插入空格
+                    let contentHTML = '';
+                    section.content.forEach(line => {
+                        // 使用正則表達式尋找[n]格式的佔位符
+                        const processedLine = line.replace(/\[(\d+)\]/g, (match, questionId) => {
+                            const qIndex = section.questions.findIndex(q => q.id === parseInt(questionId));
+                            
+                            // 計算全局問題索引
+                            let globalIndex = 0;
+                            for (let i = 0; i < index; i++) {
+                                globalIndex += bibleContent[i].questions.length;
+                            }
+                            globalIndex += qIndex;
+                            
+                            return `<span class="blank" id="blank-${globalIndex}" data-question-id="${globalIndex}">_____</span>`;
+                        });
+                        
+                        contentHTML += processedLine + '<br>';
+                    });
+                    
+                    verseTextEl.innerHTML = contentHTML;
+                    
+                    contentCard.appendChild(titleEl);
+                    contentCard.appendChild(verseTextEl);
+                    sectionEl.appendChild(contentCard);
+                    contentArea.appendChild(sectionEl);
+                });
+            }
+            
+            // 渲染章節進度條
+            function renderProgressBar() {
+                const progressBar = document.getElementById('progress-bar');
+                let progressHTML = '';
+                
+                bibleContent.forEach((section, index) => {
+                    progressHTML += `
+                        <div class="progress-step">
+                            <div class="step-dot${index === 0 ? ' active' : ''}" data-section="${section.section}">
+                                ${section.section}
+                            </div>
+                            <div class="step-title">${section.title}</div>
+                            ${index < bibleContent.length - 1 ? `<div class="step-connector"></div>` : ''}
+                        </div>
+                    `;
+                });
+                
+                progressBar.innerHTML = progressHTML;
+            }
+            
+            // 更新進度條狀態
+            function updateProgressBar() {
+                const stepDots = document.querySelectorAll('.step-dot');
+                const stepConnectors = document.querySelectorAll('.step-connector');
+                
+                stepDots.forEach((dot, index) => {
+                    // 重置所有狀態
+                    dot.classList.remove('active', 'completed');
+                    
+                    // 設置當前活動章節
+                    if (index === currentSectionIndex) {
+                        dot.classList.add('active');
+                    }
+                    // 設置已完成章節
+                    else if (index < currentSectionIndex) {
+                        dot.classList.add('completed');
+                    }
+                });
+                
+                // 更新連接線
+                stepConnectors.forEach((connector, index) => {
+                    connector.classList.remove('completed');
+                    if (index < currentSectionIndex) {
+                        connector.classList.add('completed');
+                    }
+                });
+                
+                // 確保當前章節可見
+                const activeDot = document.querySelector('.step-dot.active');
+                if (activeDot) {
+                    activeDot.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            }
+            
+            // 高亮當前空格並添加閃爍效果
+            function highlightCurrentBlank() {
+                const blanks = document.querySelectorAll('.blank');
+                blanks.forEach(blank => {
+                    blank.style.backgroundColor = '';
+                    blank.classList.remove('current');
+                    
+                    if (parseInt(blank.dataset.questionId) === currentQuestionGlobalIndex) {
+                        blank.classList.add('current');
+                        // 滾動到該空格，確保在問題區域顯示前就可見
+                        blank.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            }
+            
+            // 顯示當前問題
+            function showQuestion(globalIndex) {
+                if (globalIndex >= allQuestions.length) {
+                    finishGame();
+                    return;
+                }
+                
+                currentQuestionGlobalIndex = globalIndex;
+                const questionText = document.getElementById('question-text');
+                const optionsContainer = document.getElementById('options-container');
+                const currentQuestion = allQuestions[globalIndex];
+                
+                // 更新當前章節索引
+                currentSectionIndex = currentQuestion.sectionIndex;
+                
+                // 建立問題文字
+                questionText.innerHTML = `問題 ${globalIndex + 1}：選擇正確的答案`;
+                
+                // 建立選項
+                optionsContainer.innerHTML = '';
+                // 打亂選項順序
+                const shuffledOptions = [...currentQuestion.options].sort(() => Math.random() - 0.5);
+                
+                shuffledOptions.forEach(option => {
+                    const optionEl = document.createElement('div');
+                    optionEl.className = 'option';
+                    optionEl.textContent = option;
+                    
+                    optionEl.setAttribute('data-value', option);
+                    
+                    optionEl.addEventListener('click', function() {
+                        // 如果這個選項已經被標記為不正確，就不允許選擇
+                        if (!this.classList.contains('incorrect')) {
+                            // 取消所有選項的選中狀態
+                            document.querySelectorAll('.option').forEach(el => {
+                                if (!el.classList.contains('incorrect')) {
+                                    el.classList.remove('selected');
+                                }
+                            });
+                            // 選中當前選項
+                            this.classList.add('selected');
+                        }
+                    });
+                    optionsContainer.appendChild(optionEl);
+                });
+                
+                // 確保當前章節內容顯示
+                document.querySelectorAll('.section-content').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(`section-${bibleContent[currentSectionIndex].section}-content`).classList.add('active');
+                
+                // 先滾動到blank位置，再高亮，確保不被問題區域遮擋
+                setTimeout(() => {
+                    highlightCurrentBlank();
+                }, 100);
+                
+                // 更新進度條
+                updateProgressBar();
+            }
+            
+            // 提交答案
+            function submitAnswer() {
+                const selectedOption = document.querySelector('.option.selected:not(.incorrect)');
+                if (!selectedOption) {
+                    alert('請選擇一個答案');
+                    return;
+                }
+                
+                const userAnswer = selectedOption.textContent;
+                const currentQuestion = allQuestions[currentQuestionGlobalIndex];
+                
+                // 解碼正確答案
+                const correctAnswer = decodeAnswer(currentQuestion.encodedAnswer);
+                
+                // 檢查答案是否正確
+                if (userAnswer === correctAnswer) {
+                    // 答對
+                    selectedOption.classList.add('correct');
+                    
+                    // 更新空格
+                    const currentBlank = document.getElementById(`blank-${currentQuestionGlobalIndex}`);
+                    if (currentBlank) {
+                        currentBlank.textContent = correctAnswer;
+                        currentBlank.classList.add('bounce-animation');
+                        currentBlank.classList.remove('current');
+                        currentBlank.style.color = 'var(--correct-color)';
+                    }
+                    
+                    // 增加分數
+                    score++;
+                    
+                    // 更新進度
+                    updateProgress();
+                    
+                    // 準備進入下一題
+                    const nextGlobalIndex = currentQuestionGlobalIndex + 1;
+                    
+                    // 暫停一下，再進入下一題
+                    setTimeout(() => {
+                        currentQuestionGlobalIndex = nextGlobalIndex;
+                        showQuestion(currentQuestionGlobalIndex);
+                    }, 1000);
+                } else {
+                    // 答錯
+                    selectedOption.classList.add('incorrect');
+                    selectedOption.classList.remove('selected');
+                    
+                    // 增加總錯誤次數
+                    totalWrongAttempts++;
+                }
+            }
+            
+            // 更新進度顯示
+            function updateProgress() {
+                const progressCount = document.getElementById('progress-count');
+                const progressFill = document.getElementById('progress-fill');
+                const progressScore = document.getElementById('progress-score');
+                
+                progressCount.textContent = `${currentQuestionGlobalIndex + 1} / ${allQuestions.length}`;
+                progressFill.style.width = `${((currentQuestionGlobalIndex + 1) / allQuestions.length) * 100}%`;
+                progressScore.textContent = `得分: ${score} / ${allQuestions.length}`;
+            }
+            
+            // 完成遊戲
+			function finishGame() {
+				document.getElementById('question-container').style.display = 'none';
+				
+				document.querySelectorAll('.section-content').forEach(section => {
+					section.classList.remove('active');
+				});
+				document.getElementById('intro-content').classList.add('active');
+				
+				const resultContainer = document.getElementById('result-container');
+				resultContainer.style.display = 'block';
+				
+				const scoreEl = document.getElementById('score');
+				const feedbackEl = document.getElementById('feedback');
+				const statsContainer = document.getElementById('stats-container');
+				
+				scoreEl.textContent = `您的得分: ${score} / ${allQuestions.length}`;
+				
+				// 根據得分提供反饋
+				const percentage = (score / allQuestions.length) * 100;
+				let feedback;
+				
+				if (percentage >= 90) {
+					feedback = "超勁！你對聖經有深刻嘅理解！";
+				} else if (percentage >= 70) {
+					feedback = "勁喎！你對聖經知識掌握得幾好！";
+				} else if (percentage >= 50) {
+					feedback = "唔錯！繼續學習聖經會有更多收穫！";
+				} else {
+					feedback = "謝謝參與！呢個是個學習聖經嘅好機會，再玩多次丫！";
+				}
+				
+				feedbackEl.textContent = feedback;
+				
+				// 顯示總嘗試次數統計
+				let statsHTML = '<h3 style="margin-bottom:10px;">答題統計</h3>';
+				
+				// 添加總統計
+				statsHTML += `
+					<div class="stat-item">
+						<span class="stat-label">總答題次數:</span>
+						<span>${totalWrongAttempts + allQuestions.length}次</span>
+					</div>
+					<div class="stat-item">
+						<span class="stat-label">答錯次數:</span>
+						<span>${totalWrongAttempts}次</span>
+					</div>
+					<div class="stat-item">
+						<span class="stat-label">正確率:</span>
+						<span>${Math.round(allQuestions.length / (totalWrongAttempts + allQuestions.length) * 100)}%</span>
+					</div>
+				`;
+				
+				statsContainer.innerHTML = statsHTML;
+				
+				// 延遲添加完整內容回顧，確保DOM已更新
+				setTimeout(() => {
+					// 移除現有的完整內容回顧（如果有）
+					const existingReview = document.getElementById('complete-review-container');
+					if (existingReview) {
+						existingReview.remove();
+					}
+					
+					// 獲取intro-content的父元素
+					const contentArea = document.getElementById('intro-content').parentNode;
+					
+					// 生成完整內容回顧
+					const reviewContainer = generateCompleteContentReview();
+					
+					// 將完整內容回顧添加到contentArea的最後
+					contentArea.appendChild(reviewContainer);
+					
+					
+				}, 500);
+			}
+
+			// 生成完整內容回顧
+			function generateCompleteContentReview() {
+				// 創建一個新的容器
+				const reviewMainContainer = document.createElement('div');
+				reviewMainContainer.id = 'complete-review-container';
+				reviewMainContainer.className = 'review-main-container';
+				
+				// 創建回顧容器
+				const reviewContainer = document.createElement('div');
+				reviewContainer.className = 'review-content';
+				
+				// 添加標題
+				const reviewTitle = document.createElement('h2');
+				reviewTitle.className = 'review-header';
+				reviewTitle.textContent = '完整內容回顧';
+				reviewContainer.appendChild(reviewTitle);
+				
+				// 遍歷所有章節
+				bibleContent.forEach(section => {
+					// 只顯示有問題的章節
+					if (!section.questions || section.questions.length === 0) {
+						return;
+					}
+					
+					// 創建章節容器
+					const sectionDiv = document.createElement('div');
+					sectionDiv.className = 'review-chapter';
+					
+					// 創建章節標題
+					const sectionHeader = document.createElement('h3');
+					sectionHeader.className = 'chapter-header';
+					sectionHeader.textContent = `${section.section}. ${section.title} ${section.subtitle || ''}`;
+					sectionDiv.appendChild(sectionHeader);
+					
+					// 創建章節內容
+					const sectionContent = document.createElement('div');
+					sectionContent.className = 'chapter-content';
+					
+					// 確保content存在
+					if (section.content && section.content.length > 0) {
+						// 處理每一行內容
+						section.content.forEach(line => {
+							const p = document.createElement('p');
+							p.className = 'content-line';
+							
+							// 直接方式處理佔位符
+							let processedText = line;
+							for (let i = 0; i < section.questions.length; i++) {
+								const question = section.questions[i];
+								const placeholder = `[${question.id}]`;
+								if (processedText.includes(placeholder)) {
+									const answer = decodeAnswer(question.encodedAnswer);
+									processedText = processedText.replace(
+										placeholder, 
+										`<span class="answer-highlight">${answer}</span>`
+									);
+								}
+							}
+							
+							p.innerHTML = processedText;
+							sectionContent.appendChild(p);
+						});
+					} else {
+						// 添加默認消息
+						const defaultMsg = document.createElement('p');
+						defaultMsg.className = 'content-line';
+						defaultMsg.textContent = '此章節暫無內容';
+						sectionContent.appendChild(defaultMsg);
+					}
+					
+					sectionDiv.appendChild(sectionContent);
+					reviewContainer.appendChild(sectionDiv);
+				});
+				
+				reviewMainContainer.appendChild(reviewContainer);
+				
+				return reviewMainContainer;
+			}
+            
+            // 啟動遊戲
+            initGame();
+        });
+    </script>
+</body>
+</html>
