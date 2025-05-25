@@ -178,6 +178,7 @@
             flex: 1;
             overflow-y: auto;
             padding: 16px;
+            padding-bottom: 80px; /* 確保內容底部不被按鈕遮擋 */
             background-color: var(--background-color);
         }
         
@@ -259,17 +260,18 @@
             }
         }
         
-        /* 問題容器 - 修改為動態高度 */
+        /* 問題容器 - 修改為可滾動 */
         .question-container {
             background-color: var(--card-color);
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            padding: 16px;
+            padding: 16px 16px 80px 16px; /* 增加底部padding為按鈕留空間 */
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
             transition: all 0.3s;
             z-index: 10;
             width: 100%;
-            overflow-y: auto; /* 允許內容過多時滾動 */
+            overflow-y: auto;
+            max-height: 65vh; /* 限制最大高度，確保不會占滿整個屏幕 */
         }
         
         .progress-indicator {
@@ -305,7 +307,7 @@
             border-left: 4px solid var(--primary-color);
             padding: 10px;
             border-radius: 12px;
-            /*margin-bottom: 12px;*/
+            margin-bottom: 12px;
         }
         
         .question-text {
@@ -318,7 +320,6 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
-            margin-bottom: 12px;
         }
         
         .option {
@@ -352,6 +353,18 @@
             background-color: var(--incorrect-color);
             color: white;
             border-color: var(--incorrect-color);
+        }
+        
+        /* 固定在底部的提交按鈕容器 */
+        .submit-btn-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 16px;
+            background-color: var(--card-color);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 15;
         }
         
         .submit-btn {
@@ -533,7 +546,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>亞伯拉罕</h1>
+        <h1>亞伯拉罕a</h1>
         <p>創世記 12章-25章10節</p>
     </div>
     
@@ -571,7 +584,10 @@
                 <p id="question-text" class="question-text"></p>
                 <div id="options-container" class="options-container"></div>
             </div>
-            
+        </div>
+        
+        <!-- 固定在底部的提交按鈕 -->
+        <div class="submit-btn-container" id="submit-btn-container">
             <button id="submit-btn" class="submit-btn">提交答案</button>
         </div>
     </div>
@@ -971,28 +987,6 @@
                 document.getElementById('restart-btn').addEventListener('click', function() {
                     location.reload();
                 });
-                
-                // 初始調整問題容器高度
-                adjustQuestionContainerHeight();
-                
-                // 監聽調整大小和方向變化事件
-                window.addEventListener('resize', adjustQuestionContainerHeight);
-                window.addEventListener('orientationchange', adjustQuestionContainerHeight);
-            }
-            
-            // 動態調整問題容器高度
-            function adjustQuestionContainerHeight() {
-                const windowHeight = window.innerHeight;
-                const headerHeight = document.querySelector('.header').offsetHeight;
-                const progressBarHeight = document.querySelector('.progress-bar-wrapper').offsetHeight;
-                const safeAreaBottom = 60; // 為底部導航欄預留空間
-                
-                // 計算問題容器可用高度
-                const availableHeight = windowHeight - headerHeight - progressBarHeight - safeAreaBottom;
-                
-                // 設置問題容器最大高度
-                const questionContainer = document.getElementById('question-container');
-                questionContainer.style.maxHeight = `${availableHeight}px`;
             }
             
             // 扁平化所有問題
@@ -1158,6 +1152,9 @@
                     return;
                 }
                 
+                // 確保提交按鈕容器可見
+                document.getElementById('submit-btn-container').style.display = 'block';
+                
                 currentQuestionGlobalIndex = globalIndex;
                 const questionText = document.getElementById('question-text');
                 const optionsContainer = document.getElementById('options-container');
@@ -1210,9 +1207,6 @@
                 
                 // 更新進度條
                 updateProgressBar();
-                
-                // 調整問題容器高度
-                setTimeout(adjustQuestionContainerHeight, 10);
             }
             
             // 提交答案
@@ -1281,6 +1275,7 @@
             // 完成遊戲
 			function finishGame() {
 				document.getElementById('question-container').style.display = 'none';
+				document.getElementById('submit-btn-container').style.display = 'none'; // 隱藏提交按鈕
 				
 				document.querySelectorAll('.section-content').forEach(section => {
 					section.classList.remove('active');
@@ -1349,6 +1344,7 @@
 					
 					// 將完整內容回顧添加到contentArea的最後
 					contentArea.appendChild(reviewContainer);
+                    
 				}, 500);
 			}
 
@@ -1427,7 +1423,6 @@
 				});
 				
 				reviewMainContainer.appendChild(reviewContainer);
-				
 				return reviewMainContainer;
 			}
             
