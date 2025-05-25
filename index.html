@@ -279,7 +279,7 @@
         
         /* 問題容器 - 現在位於固定容器內 */
         .question-container {
-            padding: 16px 16px 8px 16px;
+            padding: 16px 16px 0px 16px;
         }
         
         .progress-indicator {
@@ -315,7 +315,6 @@
             border-left: 4px solid var(--primary-color);
             padding: 10px;
             border-radius: 12px;
-            margin-bottom: 12px;
         }
         
         .question-text {
@@ -366,7 +365,7 @@
         
         /* 提交按鈕容器 */
         .submit-btn-container {
-            padding: 8px 16px 16px 16px;
+            padding: 0px 16px 10px 16px;
         }
         
         .submit-btn {
@@ -545,20 +544,11 @@
 			transform: scale(0.98);
 		}
         
-        /* 固定容器的拉動手柄 */
-        .drag-handle {
-            width: 40px;
-            height: 5px;
-            background-color: #E4E4E4;
-            border-radius: 3px;
-            margin: 10px auto 5px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>亞伯拉罕d</h1>
+        <h1>亞伯拉罕e</h1>
         <p>創世記 12章-25章10節</p>
     </div>
     
@@ -585,9 +575,7 @@
     </div>
     
     <!-- 固定在底部的問題和按鈕容器 -->
-    <div class="fixed-bottom-container" id="fixed-bottom-container">
-        <div class="drag-handle"></div>
-        
+    <div class="fixed-bottom-container" id="fixed-bottom-container">        
         <div class="question-container" id="question-container">
             <div class="progress-indicator">
                 <span id="progress-count" class="progress-text"></span>
