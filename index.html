@@ -54,40 +54,59 @@
             font-weight: 600;
         }
         
-        .progress-bar {
+        /* 進度條容器 - 修改為水平滑動式設計 */
+        .progress-bar-wrapper {
             background-color: var(--card-color);
-            padding: 12px 1px 12px 1px;
-            overflow-x: auto;
-            white-space: nowrap;
-            display: flex;
-            flex-wrap: wrap;
             border-bottom: 1px solid rgba(0,0,0,0.1);
-            z-index: 20;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
             position: relative;
-            gap: 5px;
-            justify-content: center;
+            z-index: 20;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
         }
         
-        .progress-bar::-webkit-scrollbar {
-            height: 4px;
+        .progress-bar-wrapper::-webkit-scrollbar {
+            display: none; /* 隱藏滾動條 */
         }
         
-        .progress-bar::-webkit-scrollbar-thumb {
-            background-color: rgba(0,0,0,0.2);
-            border-radius: 4px;
+        /* 左右漸變陰影提示可滑動 */
+        .progress-bar-wrapper::after,
+        .progress-bar-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 25px;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .progress-bar-wrapper::after {
+            right: 0;
+            background: linear-gradient(to right, transparent, var(--card-color));
+        }
+        
+        .progress-bar-wrapper::before {
+            left: 0;
+            background: linear-gradient(to left, transparent, var(--card-color));
+        }
+        
+        .progress-bar {
+            padding: 12px 15px;
+            display: flex;
+            white-space: nowrap;
+            min-width: max-content;
         }
         
         .progress-step {
             display: flex;
             flex-direction: column;
             align-items: center;
-            /*margin-right: 4px;*/
-            /*margin-bottom: 5px;*/
-            min-width: 55px;
-            max-width: 80px;
+            margin-right: 20px;
+            min-width: 50px;
+            max-width: 70px;
             position: relative;
+            flex-shrink: 0;
         }
         
         .step-dot {
@@ -240,7 +259,7 @@
             }
         }
         
-        /* 問題容器 - 修改為不覆蓋內容 */
+        /* 問題容器 - 修改為動態高度 */
         .question-container {
             background-color: var(--card-color);
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
@@ -250,6 +269,7 @@
             transition: all 0.3s;
             z-index: 10;
             width: 100%;
+            overflow-y: auto; /* 允許內容過多時滾動 */
         }
         
         .progress-indicator {
@@ -517,8 +537,11 @@
         <p>創世記 12章-25章10節</p>
     </div>
     
-    <div class="progress-bar" id="progress-bar">
-        <!-- 動態生成章節進度指示器 -->
+    <!-- 修改進度條為可滑動設計 -->
+    <div class="progress-bar-wrapper">
+        <div class="progress-bar" id="progress-bar">
+            <!-- 動態生成章節進度指示器 -->
+        </div>
     </div>
     
     <div class="content-wrapper">
@@ -948,18 +971,42 @@
                 document.getElementById('restart-btn').addEventListener('click', function() {
                     location.reload();
                 });
+                
+                // 初始調整問題容器高度
+                adjustQuestionContainerHeight();
+                
+                // 監聽調整大小和方向變化事件
+                window.addEventListener('resize', adjustQuestionContainerHeight);
+                window.addEventListener('orientationchange', adjustQuestionContainerHeight);
+            }
+            
+            // 動態調整問題容器高度
+            function adjustQuestionContainerHeight() {
+                const windowHeight = window.innerHeight;
+                const headerHeight = document.querySelector('.header').offsetHeight;
+                const progressBarHeight = document.querySelector('.progress-bar-wrapper').offsetHeight;
+                const safeAreaBottom = 60; // 為底部導航欄預留空間
+                
+                // 計算問題容器可用高度
+                const availableHeight = windowHeight - headerHeight - progressBarHeight - safeAreaBottom;
+                
+                // 設置問題容器最大高度
+                const questionContainer = document.getElementById('question-container');
+                questionContainer.style.maxHeight = `${availableHeight}px`;
             }
             
             // 扁平化所有問題
             function flattenQuestions() {
                 allQuestions = [];
                 bibleContent.forEach(section => {
-                    section.questions.forEach(question => {
-                        allQuestions.push({
-                            ...question,
-                            sectionIndex: bibleContent.indexOf(section)
+                    if (section.questions) {
+                        section.questions.forEach(question => {
+                            allQuestions.push({
+                                ...question,
+                                sectionIndex: bibleContent.indexOf(section)
+                            });
                         });
-                    });
+                    }
                 });
             }
             
@@ -989,23 +1036,25 @@
                     
                     // 處理內容，插入空格
                     let contentHTML = '';
-                    section.content.forEach(line => {
-                        // 使用正則表達式尋找[n]格式的佔位符
-                        const processedLine = line.replace(/\[(\d+)\]/g, (match, questionId) => {
-                            const qIndex = section.questions.findIndex(q => q.id === parseInt(questionId));
+                    if (section.content) {
+                        section.content.forEach(line => {
+                            // 使用正則表達式尋找[n]格式的佔位符
+                            const processedLine = line.replace(/\[(\d+)\]/g, (match, questionId) => {
+                                const qIndex = section.questions.findIndex(q => q.id === parseInt(questionId));
+                                
+                                // 計算全局問題索引
+                                let globalIndex = 0;
+                                for (let i = 0; i < index; i++) {
+                                    globalIndex += bibleContent[i].questions ? bibleContent[i].questions.length : 0;
+                                }
+                                globalIndex += qIndex;
+                                
+                                return `<span class="blank" id="blank-${globalIndex}" data-question-id="${globalIndex}">_____</span>`;
+                            });
                             
-                            // 計算全局問題索引
-                            let globalIndex = 0;
-                            for (let i = 0; i < index; i++) {
-                                globalIndex += bibleContent[i].questions.length;
-                            }
-                            globalIndex += qIndex;
-                            
-                            return `<span class="blank" id="blank-${globalIndex}" data-question-id="${globalIndex}">_____</span>`;
+                            contentHTML += processedLine + '<br>';
                         });
-                        
-                        contentHTML += processedLine + '<br>';
-                    });
+                    }
                     
                     verseTextEl.innerHTML = contentHTML;
                     
@@ -1036,7 +1085,7 @@
                 progressBar.innerHTML = progressHTML;
             }
             
-            // 更新進度條狀態
+            // 更新進度條狀態並滾動到當前章節
             function updateProgressBar() {
                 const stepDots = document.querySelectorAll('.step-dot');
                 const stepConnectors = document.querySelectorAll('.step-connector');
@@ -1063,10 +1112,27 @@
                     }
                 });
                 
-                // 確保當前章節可見
-                const activeDot = document.querySelector('.step-dot.active');
-                if (activeDot) {
-                    activeDot.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                // 滾動進度條使當前章節居中
+                scrollProgressBarToCenter();
+            }
+            
+            // 滾動進度條使當前章節居中
+            function scrollProgressBarToCenter() {
+                const progressBar = document.getElementById('progress-bar');
+                const activeStep = progressBar.querySelector('.step-dot.active');
+                
+                if (activeStep) {
+                    const wrapper = document.querySelector('.progress-bar-wrapper');
+                    const wrapperWidth = wrapper.offsetWidth;
+                    const stepLeft = activeStep.parentElement.offsetLeft;
+                    
+                    // 計算滾動位置，使活動項居中
+                    const scrollLeft = stepLeft - (wrapperWidth / 2) + 25;
+                    
+                    wrapper.scrollTo({
+                        left: scrollLeft,
+                        behavior: 'smooth'
+                    });
                 }
             }
             
@@ -1144,6 +1210,9 @@
                 
                 // 更新進度條
                 updateProgressBar();
+                
+                // 調整問題容器高度
+                setTimeout(adjustQuestionContainerHeight, 10);
             }
             
             // 提交答案
@@ -1280,8 +1349,6 @@
 					
 					// 將完整內容回顧添加到contentArea的最後
 					contentArea.appendChild(reviewContainer);
-					
-					
 				}, 500);
 			}
 
