@@ -77,18 +77,6 @@
             display: none; /* 隱藏滾動條 */
         }
         
-        /* 左右漸變陰影提示可滑動 */
-        .progress-bar-wrapper::after,
-        .progress-bar-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            width: 25px;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-        
         .progress-bar-wrapper::after {
             right: 0;
             background: linear-gradient(to right, transparent, var(--card-color));
@@ -556,7 +544,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>亞伯拉罕a</h1>
+        <h1>亞伯拉罕</h1>
         <p>創世記 12章-25章10節</p>
     </div>
     
