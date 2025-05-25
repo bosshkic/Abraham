@@ -468,7 +468,7 @@
 		.review-main-container {
 			width: 100%;
 			/*max-width: 800px;*/
-			padding: 0 10px;
+			/*padding: 0 10px;*/
 		}
 
 		.review-content {
@@ -548,7 +548,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>亞伯拉罕e</h1>
+        <h1>亞伯拉罕</h1>
         <p>創世記 12章-25章10節</p>
     </div>
     
@@ -746,7 +746,7 @@
                 },
                 {
                     section: "E",
-                    title: "E.	信心不足",
+                    title: "信心不足",
                     subtitle: "(16)",
                     content: [
                         "<b style='color: var(--primary-color);'>自訂計謀</b> (16:1-3) 撒萊出計藉婢女夏甲生子 (16:16) 亞伯蘭86歲藉夏甲生[0]",
@@ -1331,24 +1331,20 @@
 				
 				statsContainer.innerHTML = statsHTML;
 				
-				// 延遲添加完整內容回顧，確保DOM已更新
-				setTimeout(() => {
-					// 移除現有的完整內容回顧（如果有）
-					const existingReview = document.getElementById('complete-review-container');
-					if (existingReview) {
-						existingReview.remove();
-					}
-					
-					// 獲取intro-content的父元素
-					const contentArea = document.getElementById('intro-content').parentNode;
-					
-					// 生成完整內容回顧
-					const reviewContainer = generateCompleteContentReview();
-					
-					// 將完整內容回顧添加到contentArea的最後
-					contentArea.appendChild(reviewContainer);
-                    
-				}, 500);
+				// 移除現有的完整內容回顧（如果有）
+				const existingReview = document.getElementById('complete-review-container');
+				if (existingReview) {
+					existingReview.remove();
+				}
+				
+				// 獲取intro-content的父元素
+				const contentArea = document.getElementById('intro-content').parentNode;
+				
+				// 生成完整內容回顧
+				const reviewContainer = generateCompleteContentReview();
+				
+				// 將完整內容回顧添加到contentArea的最後
+				contentArea.appendChild(reviewContainer);
 			}
 
 			// 生成完整內容回顧
