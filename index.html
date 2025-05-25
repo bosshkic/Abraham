@@ -40,13 +40,18 @@
         
         /* 修改標題背景 */
         .header {
-            text-align: center;
-            padding: 16px;
-            background-color: var(--header-bg);
-            color: var(--header-text);
-            z-index: 20;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-        }
+			text-align: center;
+			padding: 16px;
+			background-color: var(--header-bg);
+			color: var(--header-text);
+			z-index: 20;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+			position: sticky; /* 改為sticky定位 */
+			top: 0; /* 固定在頂部 */
+			left: 0;
+			right: 0;
+		}
+
         
         .header h1 {
             font-size: 22px;
@@ -54,16 +59,19 @@
             font-weight: 600;
         }
         
-        /* 進度條容器 - 修改為水平滑動式設計 */
+        /* 進度條容器 */
         .progress-bar-wrapper {
-            background-color: var(--card-color);
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 20;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
-        }
+			background-color: var(--card-color);
+			border-bottom: 1px solid rgba(0,0,0,0.1);
+			position: sticky; /* 改為sticky定位 */
+			top: 56px; /* 標題高度，確保緊跟標題 */
+			left: 0;
+			right: 0;
+			z-index: 20;
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+			scrollbar-width: none; /* Firefox */
+		}
         
         .progress-bar-wrapper::-webkit-scrollbar {
             display: none; /* 隱藏滾動條 */
@@ -548,7 +556,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>亞伯拉罕</h1>
+        <h1>亞伯拉罕a</h1>
         <p>創世記 12章-25章10節</p>
     </div>
     
@@ -1136,18 +1144,28 @@
             
             // 高亮當前空格並添加閃爍效果
             function highlightCurrentBlank() {
-                const blanks = document.querySelectorAll('.blank');
-                blanks.forEach(blank => {
-                    blank.style.backgroundColor = '';
-                    blank.classList.remove('current');
-                    
-                    if (parseInt(blank.dataset.questionId) === currentQuestionGlobalIndex) {
-                        blank.classList.add('current');
-                        // 滾動到該空格，確保在問題區域顯示前就可見
-                        blank.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                });
-            }
+				const blanks = document.querySelectorAll('.blank');
+				blanks.forEach(blank => {
+					blank.style.backgroundColor = '';
+					blank.classList.remove('current');
+					
+					if (parseInt(blank.dataset.questionId) === currentQuestionGlobalIndex) {
+						blank.classList.add('current');
+						
+						// 使用元素的scrollIntoView，但只影響content-area
+						const contentArea = document.getElementById('content-area');
+						
+						// 計算空格在content-area中的相對位置
+						const blankPosition = blank.offsetTop;
+						
+						// 滾動content-area
+						contentArea.scrollTo({
+							top: blankPosition - 100, // 減去一些距離以便看到上下文
+							behavior: 'smooth'
+						});
+					}
+				});
+			}
             
             // 顯示當前問題
             function showQuestion(globalIndex) {
