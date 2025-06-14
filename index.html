@@ -519,26 +519,6 @@
 			border-radius: 4px;
 			border: 1px solid rgba(76, 175, 80, 0.3);
 		}
-
-		.back-top-button {
-			background-color: var(--primary-color);
-			color: white;
-			border: none;
-			border-radius: 12px;
-			padding: 12px 20px;
-			font-size: 16px;
-			font-weight: 600;
-			cursor: pointer;
-			transition: all 0.3s;
-			box-shadow: 0 2px 8px rgba(30, 136, 229, 0.3);
-			margin: 20px auto 10px;
-			display: block;
-		}
-
-		.back-top-button:active {
-			background-color: var(--primary-dark);
-			transform: scale(0.98);
-		}
         
     </style>
 </head>
@@ -669,15 +649,15 @@
                     title: "信心初現",
                     subtitle: "(13:5-14:24)",
                     content: [
-                        "<b style='color: var(--primary-color);'>謙讓選地</b> (13:6-8) 財多牧人就相爭因而決定分開 (13:9-12) 讓羅得先選地，羅得選肥沃的[0]平原，亞伯蘭居迦南<br/>(13:13) 耶和華看所多瑪人是[1]<br/>(13:14-16)神應許亞伯蘭後裔像[2]那麼多",
-                        "<b style='color: var(--primary-color);'>營救羅得</b> (14:1-12) 四王與五王交戰，羅得受牽連被擄 (14:13-16) 聞羅得被擄，率領318人追趕，救回羅得與財物",
-                        "<b style='color: var(--primary-color);'>榮耀歸神</b> (14:18-20) 神的祭司，撒冷王[3]祝福亞伯蘭尊崇至高神將敵交到手中，亞伯蘭獻[4] (14:21-24) 拒絕所多瑪王財物，尊神的名倚靠神",
+                        "<b style='color: var(--primary-color);'>謙讓選地</b> (13:6-8) 財多相方牧人就相爭因而決定分開 (13:9-12) 羅得選肥沃的約旦河平原並最後移到[0]<br/>(13:13) 耶和華看所多瑪人是[1]<br/>(13:14-16)神應許亞伯蘭後裔像[2]那麼多",
+                        "<b style='color: var(--primary-color);'>營救羅得</b> (14:1-12) [3]交戰，羅得受牽連被擄 (14:13-16) 亞伯蘭聞羅得被擄，率領318人追趕，救回羅得與財物",
+                        "<b style='color: var(--primary-color);'>榮耀歸神</b> (14:18-20) 神的祭司，撒冷王[4]祝福亞伯蘭尊崇至高神將敵交到手中，亞伯蘭獻[5] (14:21-24) 拒絕所多瑪王財物，尊神的名倚靠神",
                     ],
                     questions: [
                         {
                             id: 0,
                             encodedAnswer: "%E6%89%80%E5%A4%9A%E7%91%AA",
-                            options: ["所多瑪", "迦南", "約旦", "巴比倫"]
+                            options: ["所多瑪", "迦南", "約旦河", "巴比倫"]
                         },
                         {
                             id: 1,
@@ -689,13 +669,18 @@
                             encodedAnswer: "%E5%9C%B0%E4%B8%8A%E5%A1%B5%E6%B2%99",
                             options: ["地上塵沙", "空中白雲", "海中魚類", "花草樹木"]
                         },
-                        {
+						{
                             id: 3,
+                            encodedAnswer: "%E5%9B%9B%E7%8E%8B%E8%88%87%E4%BA%94%E7%8E%8B",
+                            options: ["埃及與所多瑪", "以色列與埃及", "六王與七王", "四王與五王"]
+                        },
+                        {
+                            id: 4,
                             encodedAnswer: "%E9%BA%A5%E5%9F%BA%E6%B4%97%E5%BE%B7",
                             options: ["麥基洗德", "亞比米勒", "巴拉", "瑪拿西"]
                         },
                         {
-                            id: 4,
+                            id: 5,
                             encodedAnswer: "%E6%89%80%E5%BE%97%E5%8D%81%E5%88%86%E4%B9%8B%E4%B8%80",
                             options: ["所得十分之一", "祭物", "感恩祭", "素祭"]
                         }
@@ -772,30 +757,50 @@
                     title: "割禮之約",
                     subtitle: "(17-18:19)",
                     content: [
-                        "<b style='color: var(--primary-color);'>名字更改</b> (17:5, 15) 亞伯蘭99歳改名[0]，作萬國的父。撒萊改名撒拉",
-						"<b style='color: var(--primary-color);'>立約應許</b> (17:6-8) [1]必從你而出，迦南地為永遠產業 (17:16-17, 19, 21) 撒拉作多國之母，明年生兒子[2]，君王必從撒拉而出<br/>(17:17) 亞伯拉罕難以置信笑了<br/>(17:20) 以實瑪利必生十二個族長也成為大國<br/>(18:1-15) 耶和華顯現，天使預告明年撒拉必生兒子，撒拉聽後想到年紀老邁又已停月經因而暗笑",
-						"<b style='color: var(--primary-color);'>割禮記號</b> (17:9-14) 世世代代男子謹守割禮的約，不受割禮的男子必[3]<br/>(17:22-27) 亞伯拉罕家裡所有的男人，一同受了割禮，那時亞伯拉罕99歲，以實瑪利13歲"
+                        "<b style='color: var(--primary-color);'>名字更改</b> (17:5, 15) 亞伯蘭99歳改名[0]，作萬國的父。撒萊改名[1]",
+						"<b style='color: var(--primary-color);'>立約應許</b> (17:6-8) [2]必從你而出，迦南地為永遠產業 (17:16-17, 19, 21) 撒拉作多國之母，明年生兒子[3]，君王必從撒拉而出<br/>(17:17) 亞伯拉罕難以置信笑了<br/>(17:20) 以實瑪利必生[4]也成為大國<br/>(18:1-15) 耶和華顯現，天使預告明年撒拉必[5]，撒拉聽後想到年紀老邁又已停月經因而暗笑",
+						"<b style='color: var(--primary-color);'>割禮記號</b> (17:9-14) 世世代代男子謹守割禮的約，不受割禮的男子必[6]<br/>(17:22-27) 亞伯拉罕家裡所有的男人，一同受了割禮，那時亞伯拉罕99歲，以實瑪利[7]歲"
                     ],
                     questions: [
 						{
                             id: 0,
                             encodedAnswer: "%E4%BA%9E%E4%BC%AF%E6%8B%89%E7%BD%95",
-                            options: ["大伯", "亞伯", "約伯", "亞伯拉罕"]
+                            options: ["所羅巴伯", "亞伯", "約伯", "亞伯拉罕"]
                         },
 						{
                             id: 1,
+                            encodedAnswer: "%E6%92%92%E6%8B%89",
+                            options: ["妥拉", "撒拉", "土拉", "撒瑪利亞"]
+                        },
+						{
+                            id: 2,
                             encodedAnswer: "%E5%9C%8B%E5%BA%A6%E5%90%9B%E7%8E%8B",
                             options: ["國度君王", "祭司", "士師", "巨人"]
                         },
 						{
-                            id: 2,
+                            id: 3,
                             encodedAnswer: "%E4%BB%A5%E6%92%92",
                             options: ["以掃", "以撒", "雅各", "大衛"]
                         },
 						{
-                            id: 3,
+                            id: 4,
+                            encodedAnswer: "%E5%8D%81%E4%BA%8C%E5%80%8B%E6%97%8F%E9%95%B7",
+                            options: ["十二個族長", "七個族長", "十個君王", "三個勇士"]
+                        },
+						{
+                            id: 5,
+                            encodedAnswer: "%E7%94%9F%E5%85%92%E5%AD%90",
+                            options: ["生雙胞兒", "來月經", "生兒子", "再嫁"]
+                        },
+						{
+                            id: 6,
                             encodedAnswer: "%E5%BE%9E%E6%B0%91%E4%B8%AD%E5%89%AA%E9%99%A4",
                             options: ["享長壽", "受祝福", "從民中剪除", "受詛咒"]
+                        },
+						{
+                            id: 7,
+                            encodedAnswer: "13",
+                            options: ["33", "23", "13", "3"]
                         }
 					]
                 },
@@ -806,7 +811,7 @@
                     content: [
                         "<b style='color: var(--primary-color);'>罪惡滿城</b> (18:20) 所多瑪和蛾摩拉罪惡極重 (19:1-11) 羅得接待兩[0]，所多瑪人顯出其惡行要求交出二人同房",
 						"<b style='color: var(--primary-color);'>為義人求</b> (18:23-33) 亞伯拉罕為五十個/四十五個/四十個/三十個/二十個/十個義人代救，耶和華承諾不因十個義人[1]",
-						"<b style='color: var(--primary-color);'>罪惡審判</b> (19:12, 14-17) 天使救羅得一家，吩咐要[2]<br/>(19:13) 宣告滅城 (19:23-25) [3]降與所多瑪和蛾摩拉<br/>(19:26) 羅得的妻子回望，就變成了[4]<br/>(19:29) 神記念亞伯拉罕，把羅得從傾覆中救出<br/>(19:30-38) 羅得兩個女兒為留後而弄醉父親同睡，大女兒生兒子即[5]人始祖，小女兒生兒子即[6]人始祖",
+						"<b style='color: var(--primary-color);'>罪惡審判</b> (19:12, 14-17) 天使救羅得一家，吩咐要[2]<br/>(19:13) 宣告滅城 (19:23-25) [3]降與所多瑪和蛾摩拉<br/>(19:26) 羅得的妻子回望，就變成了[4]<br/>(19:29) 神記念[5]，把羅得從傾覆中救出<br/>(19:30-38) 羅得兩個女兒為留後而弄醉父親同睡，大女兒生兒子即[6]人始祖，小女兒生兒子即[7]人始祖",
                     ],
                     questions: [
 						{
@@ -836,11 +841,16 @@
                         },
 						{
                             id: 5,
+                            encodedAnswer: "%E4%BA%9E%E4%BC%AF%E6%8B%89%E7%BD%95",
+                            options: ["挪亞", "所多瑪人", "亞伯拉罕", "羅得"]
+                        },
+						{
+                            id: 6,
                             encodedAnswer: "%E6%91%A9%E6%8A%BC",
                             options: ["亞瑪力", "迦南", "亞捫", "摩押"]
                         },
 						{
-                            id: 6,
+                            id: 7,
                             encodedAnswer: "%E4%BA%9E%E6%8D%AB",
                             options: ["米甸", "迦南", "亞捫", "摩押"]
                         }
@@ -881,7 +891,7 @@
                         "<b style='color: var(--primary-color);'>以撒出生</b> (21:1-7) 亞伯拉罕正[0]歲生以撒，以撒在第八天行割禮",
 						"<b style='color: var(--primary-color);'>家庭矛盾</b> (21:8-14) 亞伯拉罕聽從撒拉及神，[1]夏甲和以實瑪利<br/>(21:12-13) [2]生的，才可以稱為你的後裔; 以實瑪利也是你的後裔",
 						"<b style='color: var(--primary-color);'>神的眷顧</b> (21:15-21) 夏甲母子得保守",
-						"<b style='color: var(--primary-color);'>見證祝福</b> (21:22-34) 亞比米勒見證神與亞伯拉罕同在，彼此立約要相方子孫互相恩待"
+						"<b style='color: var(--primary-color);'>見證祝福</b> (21:22-34) 亞比米勒見證神與亞伯拉罕同在，彼此立約要[3]"
                     ],
                     questions: [
 						{
@@ -898,6 +908,11 @@
                             id: 2,
                             encodedAnswer: "%E4%BB%A5%E6%92%92",
                             options: ["以實瑪利", "撒拉", "夏甲", "以撒"]
+                        },
+						{
+                            id: 3,
+                            encodedAnswer: "%E7%9B%B8%E6%96%B9%E5%AD%90%E5%AD%AB%E4%BA%92%E7%9B%B8%E6%81%A9%E5%BE%85",
+                            options: ["共同居住", "共享財產", "相方子孫互相恩待", "相方互不往來"]
                         }
 					]
                 },
@@ -908,7 +923,7 @@
                     content: [
                         "<b style='color: var(--primary-color);'>獻子信心</b> (22:1-10) 神吩咐獻[0]為燔祭，亞伯拉罕順服遵從，堅信神必預備",
 						"<b style='color: var(--primary-color);'>神的印證</b> (22:11-14) 神預備[1]代替; 「耶和華[2]」「在耶和華的山上必有預備。」",
-						"<b style='color: var(--primary-color);'>萬代應許</b> (22:15-18) 神起誓賜福，後裔繁多像天上的星海邊的沙，後裔必征服仇敵"
+						"<b style='color: var(--primary-color);'>萬代應許</b> (22:15-18) 神起誓賜福，後裔繁多像[3]，後裔必征服仇敵"
                     ],
                     questions: [
 						{
@@ -925,6 +940,11 @@
                             id: 2,
                             encodedAnswer: "%E4%BB%A5%E5%8B%92",
                             options: ["尼西", "以勒", "拉法", "沙龍"]
+                        },
+						{
+                            id: 3,
+                            encodedAnswer: "%E5%A4%A9%E4%B8%8A%E7%9A%84%E6%98%9F%E6%B5%B7%E9%82%8A%E7%9A%84%E6%B2%99",
+                            options: ["空中的飛鳥", "山上的樹木", "天上的星海邊的沙", "平原的草"]
                         }
 					]
                 },
