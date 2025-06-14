@@ -1371,6 +1371,11 @@
 				
 				// 將完整內容回顧添加到contentArea的最後
 				contentArea.appendChild(reviewContainer);
+				
+				contentArea.scrollTo({
+					top: 0,
+					behavior: 'smooth'
+				});
 			}
 
 			// 生成完整內容回顧
